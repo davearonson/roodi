@@ -31,6 +31,9 @@ module Roodi
       def start(paths)
         puts "\nRunning Roodi checks"
 
+        no_raise = paths.detect { |arg| %w(-n --no-raise).include? arg }
+        paths.delete no_raise
+
         paths = ['.'] if paths == []
         all_files = collect_files(paths)
         @files_checked = all_files.count
@@ -38,18 +41,20 @@ module Roodi
           check_file(path)
         end
 
-        output_result(errors, @files_checked)
+        output_result(errors, @files_checked, no_raise)
       end
 
-      def output_result(errors, files_checked)
+      def output_result(errors, files_checked, no_raise)
         errors.each {|error| puts "\e[31m#{error}\e[0m"}
 
         puts "\nChecked #{files_checked} files"
         result = "Found #{errors.size} errors."
-        if errors.empty?
-          puts "\e[32m#{result}\e[0m"
+        color = errors.any? ? 31 : 32
+        msg = "\e[#{color}m#{result}\e[0m"
+        if errors.empty? || no_raise
+          puts msg
         else
-          raise "\e[31m#{result}\e[0m"
+          raise msg
         end
       end
 

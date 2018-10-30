@@ -13,6 +13,7 @@ if ARGV.detect { |arg| arg == "-h" || arg == "--help" }
   puts "Options are ..."
   puts "-c, --config=FILE         use FILE as the config file."
   puts "-h, --help                display this help."
+  puts "-n, --no-raise            do not raise error if problems found."
   puts "-v, --version             display the program version."
 elsif ARGV.detect { |arg| arg == "-v" || arg == "--version" }
   puts Roodi::VERSION
